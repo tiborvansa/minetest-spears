@@ -28,22 +28,6 @@ function spears_register_spear(kind, desc, eq, toughness, craft)
 		}
 	})
 	
-	--minetest.register_node("spears:spear_" .. kind .. "_box", {
-		--drawtype = "nodebox",
-		--node_box = {
-			--type = "fixed",
-			--fixed = {
-				---- Shaft
-				--{-60/16, -2/16, 2/16, 4, 1/16, -1/16},
-				----Spitze
-				--{-4, -1/16, 1/16, -62/16, 0, 0},
-				--{-62/16, -1.5/16, 1.5/16, -60/16, 0.5/16, -0.5/16},
-			--}
-		--},
-		--tiles = {"spears_spear_box.png"},
-		--groups = {not_in_creative_inventory=1},
-	--})
-	
 	local SPEAR_ENTITY={
 		physical = false,
 		timer=0,
@@ -75,28 +59,26 @@ function spears_register_spear(kind, desc, eq, toughness, craft)
 			return
 		end
 		
-		if self.timer>0.2 then
-			local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
-			for k, obj in pairs(objs) do
-				if obj:get_luaentity() ~= nil then
-					if obj:get_luaentity().name ~= "spears:spear_" .. kind .. "_entity" and obj:get_luaentity().name ~= "__builtin:item" then
-						local speed = vector.length(self.object:getvelocity())
-						local damage = (speed + eq)^1.12-20
-						obj:punch(self.object, 1.0, {
-							full_punch_interval=1.0,
-							damage_groups={fleshy=damage},
-						}, nil)
-						self.object:remove()
-						minetest.add_item(self.lastpos, {name='spears:spear_' .. kind, wear=self.wear+65535/toughness})
-					end
-				end
-			end
-		end
-	
 		if self.lastpos.x~=nil then
 			if node.name ~= "air" and not (string.find(node.name, 'grass') and not string.find(node.name, 'dirt')) and not string.find(node.name, 'flowers:') and not string.find(node.name, 'farming:') then
 				self.object:remove()
 				minetest.add_item(self.lastpos, {name='spears:spear_' .. kind, wear=self.wear+65535/toughness})
+			elseif self.timer>0.2 then
+				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
+				for k, obj in pairs(objs) do
+					if obj:get_luaentity() ~= nil then
+						if obj:get_luaentity().name ~= "spears:spear_" .. kind .. "_entity" and obj:get_luaentity().name ~= "__builtin:item" then
+							local speed = vector.length(self.object:getvelocity())
+							local damage = (speed + eq)^1.12-20
+							obj:punch(self.object, 1.0, {
+								full_punch_interval=1.0,
+								damage_groups={fleshy=damage},
+							}, nil)
+							self.object:remove()
+							minetest.add_item(self.lastpos, {name='spears:spear_' .. kind, wear=self.wear+65535/toughness})
+						end
+					end
+				end
 			end
 		end
 		self.lastpos={x=pos.x, y=pos.y, z=pos.z}
