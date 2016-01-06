@@ -2,7 +2,8 @@ function spears_register_spear(kind, desc, eq, toughness, material)
 
 	minetest.register_tool("spears:spear_" .. kind, {
 		description = desc .. " spear",
-		inventory_image = "spears_spear_" .. kind .. ".png",
+                wield_image = "spears_spear_" .. kind .. ".png",
+		inventory_image = "spears_spear_" .. kind .. ".png^[transform4",
 		wield_scale= {x=2,y=1,z=1},
 		on_drop = function(itemstack, user, pointed_thing)
 			spears_shot(itemstack, user)
@@ -53,6 +54,14 @@ end
 
 if not DISABLE_STEEL_SPEAR then
 	spears_register_spear('steel', 'Steel', 6, 30, 'default:steel_ingot')
+end
+
+if not DISABLE_COPPER_SPEAR then
+	spears_register_spear('copper', 'Copper', 5, 35, 'default:copper_ingot')
+end
+
+if not DISABLE_BRONZE_SPEAR then
+	spears_register_spear('bronze', 'Bronze', 6, 35, 'default:bronze_ingot')
 end
 
 if not DISABLE_OBSIDIAN_SPEAR then

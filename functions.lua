@@ -3,7 +3,7 @@ function spears_shot (itemstack, player)
 	local playerpos = player:getpos()
 	local obj = minetest.add_entity({x=playerpos.x,y=playerpos.y+1.5,z=playerpos.z}, spear)
 	local dir = player:get_look_dir()
-	local sp = 14
+	local sp = 16
 	local dr = .3
 	local gravity = 9.8
 	obj:setvelocity({x=dir.x*sp, y=dir.y*sp, z=dir.z*sp})
@@ -57,7 +57,7 @@ function spears_set_entity(kind, eq, toughness)
 					if obj:get_luaentity() ~= nil then
 						if obj:get_luaentity().name ~= "spears:spear_" .. kind .. "_entity" and obj:get_luaentity().name ~= "__builtin:item" then
 							local speed = vector.length(self.object:getvelocity())
-							local damage = (speed + eq)^1.12-20
+							local damage = (speed + eq)^1.12-10
 							obj:punch(self.object, 1.0, {
 								full_punch_interval=1.0,
 								damage_groups={fleshy=damage},
