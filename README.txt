@@ -6,7 +6,9 @@ How to install:
 http://wiki.minetest.com/wiki/Installing_Mods
 
 How to use the mod:
-Spear work similarly to other tools such as swords, even if being a little slower. Moreover, a spear can be thrown using the drop key ('Q') or placed on a node using the place key ('right click'); they have also limited digging capabilities.
+Spear work similarly to other tools such as swords, even if being a little slower.
+A spear can also be thrown using RMB and, if it hits a mob, it deals an amount damage based on speed and material.
+Spears have limited digging capabilities too.
 
 License:
 Sourcecode: LGPLv2.1 (see http://www.gnu.org/licenses/lgpl-2.1.html)
