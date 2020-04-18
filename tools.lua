@@ -1,19 +1,12 @@
-function spears_register_spear(kind, desc, eq, toughness, material)
+function spears_register_spear(spear_type, desc, base_damage, toughness, material)
 
-	minetest.register_tool("spears:spear_" .. kind, {
+	minetest.register_tool("spears:spear_" .. spear_type, {
 		description = desc .. " spear",
-                wield_image = "spears_spear_" .. kind .. ".png",
-		inventory_image = "spears_spear_" .. kind .. ".png^[transform4",
+                wield_image = "spears_spear_" .. spear_type .. ".png",
+		inventory_image = "spears_spear_" .. spear_type .. ".png^[transform4",
 		wield_scale= {x=2,y=1,z=1},
-		on_drop = function(itemstack, user, pointed_thing)
+		on_secondary_use = function(itemstack, user, pointed_thing)
 			spears_shot(itemstack, user)
-			if not minetest.setting_getbool("creative_mode") then
-				itemstack:take_item()
-			end
-			return itemstack
-		end,
-		on_place = function(itemstack, user, pointed_thing)
-			minetest.add_item(pointed_thing.above, itemstack)
 			if not minetest.setting_getbool("creative_mode") then
 				itemstack:take_item()
 			end
@@ -25,23 +18,23 @@ function spears_register_spear(kind, desc, eq, toughness, material)
 			groupcaps={
 				cracky = {times={[3]=2}, uses=toughness, maxlevel=1},
 			},
-			damage_groups = {fleshy=eq},
+			damage_groups = {fleshy=base_damage},
 		}
 	})
 	
-	SPEAR_ENTITY=spears_set_entity(kind, eq, toughness)
+	local SPEAR_ENTITY=spears_set_entity(spear_type, base_damage, toughness)
 	
-	minetest.register_entity("spears:spear_" .. kind .. "_entity", SPEAR_ENTITY)
+	minetest.register_entity("spears:spear_" .. spear_type .. "_entity", SPEAR_ENTITY)
 	
 	minetest.register_craft({
-		output = 'spears:spear_' .. kind,
+		output = 'spears:spear_' .. spear_type,
 		recipe = {
 			{'group:wood', 'group:wood', material},
 		}
 	})
 	
 	minetest.register_craft({
-		output = 'spears:spear_' .. kind,
+		output = 'spears:spear_' .. spear_type,
 		recipe = {
 			{material, 'group:wood', 'group:wood'},
 		}
