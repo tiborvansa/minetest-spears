@@ -1,12 +1,15 @@
-=== SPEARS for MINETEST ===
+=== SPEARS for MINETEST by Echoes91 ===
 
-This mod adds spears to Minetest. It aims at improving the ones introduced within throwing enhanced.
+This mod adds spears to Minetest.
 
 How to install:
 http://wiki.minetest.com/wiki/Installing_Mods
 
 How to use the mod:
-Spear work similarly to other tools such as swords, even if being a little slower. Moreover, a spear can be thrown using the drop key ('Q') or placed on a node using the place key ('right click'); they have also limited digging capabilities.
+Craft a spear with | stick | stick | (material) |, also mirrored.
+Spears can be thrown using right mouse button, they either hurt someone or stick where they land on. Damage depends on speed and material, flight trajectory is ballistic with drag.
+Spears can be used to fight, but are slower and weaker than swords.
+Spears can be used to dig, but are slower and weaker and pickaxes.
 
 License:
 Sourcecode: LGPLv2.1 (see http://www.gnu.org/licenses/lgpl-2.1.html)

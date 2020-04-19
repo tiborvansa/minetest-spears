@@ -12,6 +12,13 @@ function spears_register_spear(spear_type, desc, base_damage, toughness, materia
 			end
 			return itemstack
 		end,
+		on_place = function(itemstack, user, pointed_thing)
+			spears_shot(itemstack, user)
+			if not minetest.setting_getbool("creative_mode") then
+				itemstack:take_item()
+			end
+			return itemstack
+		end,
 		tool_capabilities = {
 			full_punch_interval = 1.5,
 			max_drop_level=1,
@@ -19,10 +26,12 @@ function spears_register_spear(spear_type, desc, base_damage, toughness, materia
 				cracky = {times={[3]=2}, uses=toughness, maxlevel=1},
 			},
 			damage_groups = {fleshy=base_damage},
-		}
+		},
+		sound = {breaks = "default_tool_breaks"},
+		groups = {flammable = 1}
 	})
 	
-	local SPEAR_ENTITY=spears_set_entity(spear_type, base_damage, toughness)
+	local SPEAR_ENTITY = spears_set_entity(spear_type, base_damage, toughness)
 	
 	minetest.register_entity("spears:spear_" .. spear_type .. "_entity", SPEAR_ENTITY)
 	
