@@ -38,10 +38,9 @@ function spears_set_entity(spear_type, base_damage, toughness)
 		initial_properties = {
 			physical = false,
 			visual = "item",
-			visual_size = {x = 0.5, y = 0.5, z = 0.5},
+			visual_size = {x = 0.25, y = 0.25, z = 0.25},
 			wield_item = "spears:spear_" .. spear_type,
 			collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-			automatic_rotate = 10,
 		},
 
 		on_activate = function (self, staticdata, dtime_s)
