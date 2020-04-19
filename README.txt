@@ -12,18 +12,21 @@ Spears can be used to fight, but are slower and weaker than swords.
 Spears can be used to dig, but are slower and weaker and pickaxes.
 You can grab a spear on the fly (or maybe wait until it falls).
 If you feel even clever, throw a spear right above you and look at it to see what happens.
-Someone was reported to have hit its own foot but it takes practice.
+Someone once reported to have hit its own foot but it takes practice.
 
 
 CHANGELOG
 
 2.0:
 - Cleaned, streamlined code without deprecated functions
+- Spears hurt players
 - Spears animated in flight
 - Spears stick into nodes
 - New sound when hitting flesh
 - Changed receipt to fit with default tools
-- 
+- New textures
+- Drag depends on fluid
+- New gold-plated spear to celebrate
 
 1.1:
 - Make use of new on_secondary_use API, requires Minetest 5.2.0

@@ -38,12 +38,17 @@ function spears_set_entity(spear_type, base_damage, toughness)
 		initial_properties = {
 			physical = false,
 			visual = "item",
-			visual_size = {x = 0.3, y = 0.3, z = 0.3},
+			visual_size = {x = 0.5, y = 0.5, z = 0.5},
 			wield_item = "spears:spear_" .. spear_type,
 			collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			automatic_rotate = 10,
 		},
 
-		on_punch = function(self, puncher)
+		on_activate = function (self, staticdata, dtime_s)
+			self.object:set_armor_groups({immortal = 1})
+		end,
+		
+		on_punch = function (self, puncher)
 			if puncher:is_player() then
 				local stack = {name='spears:spear_' .. spear_type, wear = self._wear}
 				local inv = puncher:get_inventory()

@@ -4,7 +4,7 @@ function spears_register_spear(spear_type, desc, base_damage, toughness, materia
 		description = desc .. " spear",
                 wield_image = "spears_spear_" .. spear_type .. ".png",
 		inventory_image = "spears_spear_" .. spear_type .. ".png^[transform4",
-		wield_scale= {x=2,y=1,z=1},
+		wield_scale= {x = 2, y = 2, z = 1},
 		on_secondary_use = function(itemstack, user, pointed_thing)
 			spears_throw(itemstack, user, pointed_thing)
 			if not minetest.setting_getbool("creative_mode") then
@@ -72,4 +72,8 @@ end
 
 if not DISABLE_DIAMOND_SPEAR then
 	spears_register_spear('diamond', 'Diamond', 8, 40, 'default:diamond')
+end
+
+if not DISABLE_GOLD_SPEAR then
+	spears_register_spear('gold', 'Golden', 5, 40, 'default:gold_ingot')
 end
