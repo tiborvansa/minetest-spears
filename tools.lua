@@ -6,14 +6,14 @@ function spears_register_spear(spear_type, desc, base_damage, toughness, materia
 		inventory_image = "spears_spear_" .. spear_type .. ".png^[transform4",
 		wield_scale= {x=2,y=1,z=1},
 		on_secondary_use = function(itemstack, user, pointed_thing)
-			spears_shot(itemstack, user)
+			spears_throw(itemstack, user, pointed_thing)
 			if not minetest.setting_getbool("creative_mode") then
 				itemstack:take_item()
 			end
 			return itemstack
 		end,
 		on_place = function(itemstack, user, pointed_thing)
-			spears_shot(itemstack, user)
+			spears_throw(itemstack, user, pointed_thing)
 			if not minetest.setting_getbool("creative_mode") then
 				itemstack:take_item()
 			end
@@ -38,14 +38,14 @@ function spears_register_spear(spear_type, desc, base_damage, toughness, materia
 	minetest.register_craft({
 		output = 'spears:spear_' .. spear_type,
 		recipe = {
-			{'group:wood', 'group:wood', material},
+			{'group:stick', 'group:stick', material},
 		}
 	})
 	
 	minetest.register_craft({
 		output = 'spears:spear_' .. spear_type,
 		recipe = {
-			{material, 'group:wood', 'group:wood'},
+			{material, 'group:stick', 'group:stick'},
 		}
 	})
 end
