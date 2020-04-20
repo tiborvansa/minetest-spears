@@ -6,13 +6,12 @@ function spears_throw (itemstack, player, pointed_thing)
 	local throw_pos = vector.add(head_pos, vector.multiply(direction,0.5))
 	local pitch = player:get_look_vertical()
 	local yaw = player:get_look_horizontal()
-	local throw_speed = 15
 	local rotation = vector.new(0, yaw + math.pi/2, pitch + math.pi/6)
-	-- Stick into node
+	-- Plant into node
 	if pointed_thing.type == "node" then
 		local node = minetest.get_node(pointed_thing.under)
 		if minetest.registered_nodes[node.name].walkable and vector.distance(pointed_thing.above, throw_pos) < 1 then
-			local spear_object = minetest.add_entity(vector.add(throw_pos, vector.multiply(direction,0.5)), spear)
+			local spear_object = minetest.add_entity(vector.divide(vector.add(pointed_thing.above, pointed_thing.under), 2), spear)
 			spear_object:set_rotation(rotation)
 			minetest.sound_play("default_place_node", {pos = throw_pos}, true)
 			spear_object:get_luaentity()._wear = itemstack:get_wear()
@@ -21,6 +20,7 @@ function spears_throw (itemstack, player, pointed_thing)
 		end
 	end
 	-- Avoid hitting yourself and throw
+	local throw_speed = 12
 	while vector.distance(player_pos, throw_pos) < 1 do
 		throw_pos = vector.add(throw_pos, vector.multiply(direction,0.1))
 	end
@@ -38,9 +38,9 @@ function spears_set_entity(spear_type, base_damage, toughness)
 		initial_properties = {
 			physical = false,
 			visual = "item",
-			visual_size = {x = 0.25, y = 0.25, z = 0.25},
+			visual_size = {x = 0.3, y = 0.3, z = 0.3},
 			wield_item = "spears:spear_" .. spear_type,
-			collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			collisionbox = {-0.3, -0.3, -0.3, 0.3, 0.3, 0.3},
 		},
 
 		on_activate = function (self, staticdata, dtime_s)
@@ -48,7 +48,7 @@ function spears_set_entity(spear_type, base_damage, toughness)
 		end,
 		
 		on_punch = function (self, puncher)
-			if puncher:is_player() then
+			if puncher:is_player() then -- Grab the spear
 				local stack = {name='spears:spear_' .. spear_type, wear = self._wear}
 				local inv = puncher:get_inventory()
 				if inv:room_for_item("main", stack) then
@@ -65,14 +65,15 @@ function spears_set_entity(spear_type, base_damage, toughness)
 			end
 			local velocity = self.object:get_velocity()
 			local speed = vector.length(velocity)
+			-- Spear is stuck ?
 			if self._stickpos then
 				local node = minetest.get_node(self._stickpos)
-				if not node or not minetest.registered_nodes[node.name].walkable then
+				if not node or not minetest.registered_nodes[node.name].walkable then -- Fall when node is removed
 					self.object:remove()
 					minetest.add_item(self.object:get_pos(), {name='spears:spear_' .. spear_type, wear = self._wear})
 					return
 				end
-			else
+			else -- Spear is flying
 				local direction = vector.normalize(velocity)
 				local yaw = minetest.dir_to_yaw(velocity)
 				local pitch = math.acos(velocity.y/speed) - math.pi/3
@@ -91,9 +92,9 @@ function spears_set_entity(spear_type, base_damage, toughness)
 						return
 					end
 				end
-				-- Stick or get drag
+				-- Hit a node?	
 				if node then
-					if minetest.registered_nodes[node.name].walkable then
+					if minetest.registered_nodes[node.name].walkable then -- Stick
 						self.object:set_acceleration({x = 0, y = 0, z = 0})
 						self.object:set_velocity({x = 0, y = 0, z = 0})
 						minetest.sound_play("default_place_node", {pos = pos}, true)
@@ -104,10 +105,10 @@ function spears_set_entity(spear_type, base_damage, toughness)
 							return
 						end
 						self._stickpos = pos
-					else
+					else  -- Get drag
 						local drag = math.max(minetest.registered_nodes[node.name].liquid_viscosity, 0.1)
 						local acceleration = vector.multiply(velocity, -drag)
-						acceleration.y = acceleration.y - 10 * ((7 - drag) / 7)^2
+						acceleration.y = acceleration.y - 10 * ((7 - drag) / 7)
 						self.object:set_acceleration(acceleration)
 					end
 				end	
