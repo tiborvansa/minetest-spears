@@ -5,6 +5,9 @@ This mod adds spears to Minetest.
 How to download:
 If you have this file, you already know
 
+Forum topic:
+https://forum.minetest.net/viewtopic.php?f=11&t=13367
+
 How to install:
 http://wiki.minetest.com/wiki/Installing_Mods
 
