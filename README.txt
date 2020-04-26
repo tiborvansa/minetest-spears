@@ -27,6 +27,11 @@ Someone once reported to have hit its own foot but it takes practice to do that.
 
 CHANGELOG
 
+2.1:
+- Spears ding hard blocks (cracky < 3)
+- Fixed stick-into-node position to avoid spears turning black (#2467)
+- Player velocity added to throw (it's physics baby)
+
 2.0:
 - Cleaner, streamlined code without deprecated functions
 - Spears hurt players
