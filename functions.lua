@@ -21,7 +21,7 @@ function spears_throw (itemstack, player, pointed_thing)
 	-- Avoid hitting yourself and throw
 	local throw_speed = 12
 	while vector.distance(player_pos, throw_pos) < 1.2 do
-		throw_pos = vector.add(throw_pos, vector.multiply(direction,0.1))
+		throw_pos = vector.add(throw_pos, vector.multiply(direction, 0.1))
 	end
 	local player_vel = player:get_player_velocity()
 	local spear_object = minetest.add_entity(throw_pos, spear)
@@ -66,18 +66,18 @@ function spears_set_entity(spear_type, base_damage, toughness)
 			local velocity = self.object:get_velocity()
 			local speed = vector.length(velocity)
 			-- Spear is stuck ?
-			if self._stickpos and not self._sticknode then
+			if self._stickpos then
 				local node = minetest.get_node(self._stickpos)
-				local stick_cracky = minetest.registered_nodes[node.name].groups.cracky
-				if stick_cracky and stick_cracky < 3 then
+				local node_cracky = minetest.registered_nodes[node.name].groups.cracky
+				if node_cracky and node_cracky < 3 then
 					minetest.sound_play("default_metal_footstep", {pos = pos}, true)
 					self.object:remove()
 					minetest.add_item(self.object:get_pos(), {name='spears:spear_' .. spear_type, wear = self._wear})
-				elseif not self._stick_walkable then
+				elseif not self._node_walkable then
 					minetest.sound_play("default_place_node", {pos = throw_pos}, true)
 				end
-				self._stick_walkable = minetest.registered_nodes[node.name].walkable			
-				if not node or not self._stick_walkable then -- Fall when node is removed
+				self._node_walkable = minetest.registered_nodes[node.name].walkable			
+				if not node or not self._node_walkable then -- Fall when node is removed
 					self.object:remove()
 					minetest.add_item(self.object:get_pos(), {name='spears:spear_' .. spear_type, wear = self._wear})
 					return
@@ -87,11 +87,11 @@ function spears_set_entity(spear_type, base_damage, toughness)
 				local yaw = minetest.dir_to_yaw(direction)
 				local pitch = math.acos(velocity.y/speed) - math.pi/3
 				local pos = self.object:get_pos()
-				local next_pos = vector.add(pos, vector.multiply(velocity, dtime))
-				local node = minetest.get_node(next_pos)
+				local spearhead_pos = vector.add(pos, vector.multiply(direction, 0.5))
+				local node = minetest.get_node(spearhead_pos)
 				self.object:set_rotation({x = 0, y = yaw + math.pi/2, z = pitch})
 				-- Hit someone?
-				local objects_in_radius = minetest.get_objects_inside_radius(next_pos, 0.6)
+				local objects_in_radius = minetest.get_objects_inside_radius(spearhead_pos, 0.6)
 				for _,object in ipairs(objects_in_radius) do
 					if object:get_luaentity() ~= self and object:get_armor_groups().fleshy then
 						local damage = (speed + base_damage)^1.15 - 20
@@ -103,29 +103,25 @@ function spears_set_entity(spear_type, base_damage, toughness)
 					end
 				end
 				-- Hit a node?	
-				if node then
-					if minetest.registered_nodes[node.name].walkable then -- Stick
-						self.object:set_acceleration({x = 0, y = 0, z = 0})
-						self.object:set_velocity({x = 0, y = 0, z = 0})
-						-- Correct position if went too deep to aboid disappearing or turning black
-						while minetest.registered_nodes[minetest.get_node(pos).name].walkable do
-							pos = vector.add(pos, vector.multiply(direction, - 0.002))
-						end							
-						self.object:set_pos(pos)
-						self._wear = self._wear + 65535/toughness
-						if self._wear >= 65535 then
-							minetest.sound_play("default_tool_breaks", {pos = pos}, true)
-							self.object:remove()
-							return
-						end
-						self._stickpos = next_pos
-					else  -- Get drag
-						local drag = math.max(minetest.registered_nodes[node.name].liquid_viscosity, 0.1)
-						local acceleration = vector.multiply(velocity, -drag)
-						acceleration.y = acceleration.y - 10 * ((7 - drag) / 7)
-						self.object:set_acceleration(acceleration)
+				if node and minetest.registered_nodes[node.name].walkable
+				and not minetest.registered_nodes[node.name].buildable_to
+				and not (minetest.registered_nodes[node.name].groups.slab and spearhead_pos.y % 1 < 0.5)
+				then -- Stick
+					self.object:set_acceleration({x = 0, y = 0, z = 0})
+					self.object:set_velocity({x = 0, y = 0, z = 0})
+					self._wear = self._wear + 65535/toughness
+					if self._wear >= 65535 then
+						minetest.sound_play("default_tool_breaks", {pos = pos}, true)
+						self.object:remove()
+						return
 					end
-				end	
+					self._stickpos = spearhead_pos
+				else  -- Get drag
+					local drag = math.max(minetest.registered_nodes[node.name].liquid_viscosity, 0.1)
+					local acceleration = vector.multiply(velocity, -drag)
+					acceleration.y = acceleration.y - 10 * ((7 - drag) / 7)
+					self.object:set_acceleration(acceleration)
+				end
 			end
 		end,
 	}

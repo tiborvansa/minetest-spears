@@ -1,3 +1,7 @@
+Version 2.2:
+- "Hit detection" based on spearhead position
+- Spears go through buildable_to nodes (snow)
+- Ugly fix to not collide in air above slabs (works only if slabs are not rotated)
 
 Version 2.1:
 - Spears ding hard blocks (cracky < 3)
